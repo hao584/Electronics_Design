@@ -1,0 +1,855 @@
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.arch armv7-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Encoder.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.file 1 "USER/Hardware/Encoder.c"
+  18              		.section	.text.Encoder_Init,"ax",%progbits
+  19              		.align	1
+  20              		.global	Encoder_Init
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	Encoder_Init:
+  26              	.LFB65:
+   1:USER/Hardware/Encoder.c **** #include "Encoder.h" // °üº¬±àÂëÆ÷Ïà¹ØµÄÍ·ÎÄ¼þ
+   2:USER/Hardware/Encoder.c **** #include "tim.h"     // °üº¬¶¨Ê±Æ÷Ïà¹ØµÄÍ·ÎÄ¼þ
+   3:USER/Hardware/Encoder.c **** 
+   4:USER/Hardware/Encoder.c **** // ¶¨Òåµç»úÊýÁ¿
+   5:USER/Hardware/Encoder.c **** #define MOTOR_NUM 4
+   6:USER/Hardware/Encoder.c **** 
+   7:USER/Hardware/Encoder.c **** // È«¾Ö±äÁ¿£º´æ´¢ÉÏÒ»´ÎµÄ¼ÆÊýÆ÷ÖµºÍÊ±¼ä´Á
+   8:USER/Hardware/Encoder.c **** static int32_t last_count[MOTOR_NUM] = {0};
+   9:USER/Hardware/Encoder.c **** static uint32_t last_time[MOTOR_NUM] = {0};
+  10:USER/Hardware/Encoder.c **** 
+  11:USER/Hardware/Encoder.c **** 
+  12:USER/Hardware/Encoder.c **** /**
+  13:USER/Hardware/Encoder.c ****   * @brief ³õÊ¼»¯±àÂëÆ÷¶¨Ê±Æ÷£¬²¢¼ÇÂ¼³õÊ¼Öµ
+  14:USER/Hardware/Encoder.c ****   */
+  15:USER/Hardware/Encoder.c **** void Encoder_Init(void) {
+  27              		.loc 1 15 25 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 10B5     		push	{r4, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 4, -8
+  35              		.cfi_offset 14, -4
+  16:USER/Hardware/Encoder.c ****     // Æô¶¯±àÂëÆ÷¶¨Ê±Æ÷£¨¸ù¾ÝÊµ¼ÊÓ²¼þÁ¬½Ó£¬ÕâÀïÒÔËÄ¸ö¶¨Ê±Æ÷ÎªÀý£©
+  17:USER/Hardware/Encoder.c ****     HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+  36              		.loc 1 17 5 view .LVU1
+  37 0002 3C21     		movs	r1, #60
+  38 0004 2048     		ldr	r0, .L13
+  39 0006 FFF7FEFF 		bl	HAL_TIM_Encoder_Start
+  40              	.LVL0:
+  18:USER/Hardware/Encoder.c ****     HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 2
+
+
+  41              		.loc 1 18 5 view .LVU2
+  42 000a 3C21     		movs	r1, #60
+  43 000c 1F48     		ldr	r0, .L13+4
+  44 000e FFF7FEFF 		bl	HAL_TIM_Encoder_Start
+  45              	.LVL1:
+  19:USER/Hardware/Encoder.c ****     HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
+  46              		.loc 1 19 5 view .LVU3
+  47 0012 3C21     		movs	r1, #60
+  48 0014 1E48     		ldr	r0, .L13+8
+  49 0016 FFF7FEFF 		bl	HAL_TIM_Encoder_Start
+  50              	.LVL2:
+  20:USER/Hardware/Encoder.c ****     HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+  51              		.loc 1 20 5 view .LVU4
+  52 001a 3C21     		movs	r1, #60
+  53 001c 1D48     		ldr	r0, .L13+12
+  54 001e FFF7FEFF 		bl	HAL_TIM_Encoder_Start
+  55              	.LVL3:
+  21:USER/Hardware/Encoder.c **** 
+  22:USER/Hardware/Encoder.c ****     // ³õÊ¼»¯Ã¿¸öµç»úµÄÉÏÒ»´Î¼ÆÊýÆ÷ºÍÊ±¼ä´Á
+  23:USER/Hardware/Encoder.c ****     for (int i = 0; i < MOTOR_NUM; i++) {
+  56              		.loc 1 23 5 view .LVU5
+  57              	.LBB2:
+  58              		.loc 1 23 10 view .LVU6
+  59              		.loc 1 23 14 is_stmt 0 view .LVU7
+  60 0022 0024     		movs	r4, #0
+  61              		.loc 1 23 5 view .LVU8
+  62 0024 06E0     		b	.L2
+  63              	.LVL4:
+  64              	.L8:
+  24:USER/Hardware/Encoder.c ****         last_time[i] = HAL_GetTick();
+  25:USER/Hardware/Encoder.c ****         switch (i) {
+  26:USER/Hardware/Encoder.c ****             case 0: last_count[i] = __HAL_TIM_GET_COUNTER(&htim5); break;
+  65              		.loc 1 26 21 is_stmt 1 view .LVU9
+  66              		.loc 1 26 37 is_stmt 0 view .LVU10
+  67 0026 184B     		ldr	r3, .L13
+  68 0028 1B68     		ldr	r3, [r3]
+  69 002a 5A6A     		ldr	r2, [r3, #36]
+  70              		.loc 1 26 35 view .LVU11
+  71 002c 1A4B     		ldr	r3, .L13+16
+  72 002e 43F82420 		str	r2, [r3, r4, lsl #2]
+  73              		.loc 1 26 68 is_stmt 1 view .LVU12
+  74              	.L3:
+  23:USER/Hardware/Encoder.c ****         last_time[i] = HAL_GetTick();
+  75              		.loc 1 23 37 discriminator 2 view .LVU13
+  76 0032 0134     		adds	r4, r4, #1
+  77              	.LVL5:
+  78              	.L2:
+  23:USER/Hardware/Encoder.c ****         last_time[i] = HAL_GetTick();
+  79              		.loc 1 23 23 discriminator 1 view .LVU14
+  80 0034 032C     		cmp	r4, #3
+  81 0036 26DC     		bgt	.L12
+  24:USER/Hardware/Encoder.c ****         last_time[i] = HAL_GetTick();
+  82              		.loc 1 24 9 view .LVU15
+  24:USER/Hardware/Encoder.c ****         last_time[i] = HAL_GetTick();
+  83              		.loc 1 24 24 is_stmt 0 view .LVU16
+  84 0038 FFF7FEFF 		bl	HAL_GetTick
+  85              	.LVL6:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 3
+
+
+  24:USER/Hardware/Encoder.c ****         last_time[i] = HAL_GetTick();
+  86              		.loc 1 24 22 discriminator 1 view .LVU17
+  87 003c 174B     		ldr	r3, .L13+20
+  88 003e 43F82400 		str	r0, [r3, r4, lsl #2]
+  25:USER/Hardware/Encoder.c ****             case 0: last_count[i] = __HAL_TIM_GET_COUNTER(&htim5); break;
+  89              		.loc 1 25 9 is_stmt 1 view .LVU18
+  90 0042 032C     		cmp	r4, #3
+  91 0044 F5D8     		bhi	.L3
+  92 0046 01A3     		adr	r3, .L5
+  93 0048 53F824F0 		ldr	pc, [r3, r4, lsl #2]
+  94              		.p2align 2
+  95              	.L5:
+  96 004c 27000000 		.word	.L8+1
+  97 0050 5D000000 		.word	.L7+1
+  98 0054 6B000000 		.word	.L6+1
+  99 0058 79000000 		.word	.L4+1
+ 100              		.p2align 1
+ 101              	.L7:
+  27:USER/Hardware/Encoder.c ****             case 1: last_count[i] = __HAL_TIM_GET_COUNTER(&htim3); break;
+ 102              		.loc 1 27 21 view .LVU19
+ 103              		.loc 1 27 37 is_stmt 0 view .LVU20
+ 104 005c 0B4B     		ldr	r3, .L13+4
+ 105 005e 1B68     		ldr	r3, [r3]
+ 106 0060 5A6A     		ldr	r2, [r3, #36]
+ 107              		.loc 1 27 35 view .LVU21
+ 108 0062 0D4B     		ldr	r3, .L13+16
+ 109 0064 43F82420 		str	r2, [r3, r4, lsl #2]
+ 110              		.loc 1 27 68 is_stmt 1 view .LVU22
+ 111 0068 E3E7     		b	.L3
+ 112              	.L6:
+  28:USER/Hardware/Encoder.c ****             case 2: last_count[i] = __HAL_TIM_GET_COUNTER(&htim4); break;
+ 113              		.loc 1 28 21 view .LVU23
+ 114              		.loc 1 28 37 is_stmt 0 view .LVU24
+ 115 006a 094B     		ldr	r3, .L13+8
+ 116 006c 1B68     		ldr	r3, [r3]
+ 117 006e 5A6A     		ldr	r2, [r3, #36]
+ 118              		.loc 1 28 35 view .LVU25
+ 119 0070 094B     		ldr	r3, .L13+16
+ 120 0072 43F82420 		str	r2, [r3, r4, lsl #2]
+ 121              		.loc 1 28 68 is_stmt 1 view .LVU26
+ 122 0076 DCE7     		b	.L3
+ 123              	.L4:
+  29:USER/Hardware/Encoder.c ****             case 3: last_count[i] = __HAL_TIM_GET_COUNTER(&htim1); break;
+ 124              		.loc 1 29 21 view .LVU27
+ 125              		.loc 1 29 37 is_stmt 0 view .LVU28
+ 126 0078 064B     		ldr	r3, .L13+12
+ 127 007a 1B68     		ldr	r3, [r3]
+ 128 007c 5A6A     		ldr	r2, [r3, #36]
+ 129              		.loc 1 29 35 view .LVU29
+ 130 007e 064B     		ldr	r3, .L13+16
+ 131 0080 43F82420 		str	r2, [r3, r4, lsl #2]
+ 132              		.loc 1 29 68 is_stmt 1 view .LVU30
+ 133 0084 D5E7     		b	.L3
+ 134              	.L12:
+ 135              		.loc 1 29 68 is_stmt 0 view .LVU31
+ 136              	.LBE2:
+  30:USER/Hardware/Encoder.c ****             default: break;
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 4
+
+
+  31:USER/Hardware/Encoder.c ****         }
+  32:USER/Hardware/Encoder.c ****     }
+  33:USER/Hardware/Encoder.c **** }
+ 137              		.loc 1 33 1 view .LVU32
+ 138 0086 10BD     		pop	{r4, pc}
+ 139              	.LVL7:
+ 140              	.L14:
+ 141              		.loc 1 33 1 view .LVU33
+ 142              		.align	2
+ 143              	.L13:
+ 144 0088 00000000 		.word	htim5
+ 145 008c 00000000 		.word	htim3
+ 146 0090 00000000 		.word	htim4
+ 147 0094 00000000 		.word	htim1
+ 148 0098 00000000 		.word	last_count
+ 149 009c 00000000 		.word	last_time
+ 150              		.cfi_endproc
+ 151              	.LFE65:
+ 153              		.section	.text.MotorA_ActualSpeed,"ax",%progbits
+ 154              		.align	1
+ 155              		.global	MotorA_ActualSpeed
+ 156              		.syntax unified
+ 157              		.thumb
+ 158              		.thumb_func
+ 160              	MotorA_ActualSpeed:
+ 161              	.LFB66:
+  34:USER/Hardware/Encoder.c **** 
+  35:USER/Hardware/Encoder.c **** /**
+  36:USER/Hardware/Encoder.c ****   * @brief  »ñÈ¡µç»úAµÄÊµ¼ÊËÙ¶È¡£
+  37:USER/Hardware/Encoder.c ****   * @param  ÎÞ¡£
+  38:USER/Hardware/Encoder.c ****   * @retval int: ·µ»Øµç»úAµÄÊµ¼ÊËÙ¶ÈÖµ¡£
+  39:USER/Hardware/Encoder.c ****   */
+  40:USER/Hardware/Encoder.c **** int MotorA_ActualSpeed(void)
+  41:USER/Hardware/Encoder.c **** {	
+ 162              		.loc 1 41 1 is_stmt 1 view -0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 166              		@ link register save eliminated.
+  42:USER/Hardware/Encoder.c ****     int ActualSpeed = 0;    
+ 167              		.loc 1 42 5 view .LVU35
+ 168              	.LVL8:
+  43:USER/Hardware/Encoder.c ****     ActualSpeed = __HAL_TIM_GET_COUNTER(&htim5); // ¶ÁÈ¡¶¨Ê±Æ÷5µÄ¼ÆÊýÆ÷Öµ
+ 169              		.loc 1 43 5 view .LVU36
+ 170              		.loc 1 43 19 is_stmt 0 view .LVU37
+ 171 0000 054B     		ldr	r3, .L17
+ 172 0002 1B68     		ldr	r3, [r3]
+ 173 0004 586A     		ldr	r0, [r3, #36]
+ 174              	.LVL9:
+  44:USER/Hardware/Encoder.c **** 	__HAL_TIM_SetCounter(&htim5 , 0);//Çå¿Õ¼ÆÊýÖµ
+ 175              		.loc 1 44 2 is_stmt 1 view .LVU38
+ 176 0006 0022     		movs	r2, #0
+ 177 0008 5A62     		str	r2, [r3, #36]
+  45:USER/Hardware/Encoder.c ****     if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htim5) == 0) // ¼ì²é¶¨Ê±Æ÷5ÊÇ·ñÏòÉÏ¼ÆÊý
+ 178              		.loc 1 45 5 view .LVU39
+ 179              		.loc 1 45 8 is_stmt 0 view .LVU40
+ 180 000a 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 5
+
+
+ 181              		.loc 1 45 7 view .LVU41
+ 182 000c 13F0100F 		tst	r3, #16
+ 183 0010 00D0     		beq	.L15
+  46:USER/Hardware/Encoder.c ****     {
+  47:USER/Hardware/Encoder.c ****         ActualSpeed = ActualSpeed; // Èç¹ûÊÇÏòÉÏ¼ÆÊý£¬ËÙ¶ÈÎªÕý
+  48:USER/Hardware/Encoder.c ****     }
+  49:USER/Hardware/Encoder.c ****     else
+  50:USER/Hardware/Encoder.c ****     {
+  51:USER/Hardware/Encoder.c ****         ActualSpeed = -ActualSpeed; // Èç¹ûÊÇÏòÏÂ¼ÆÊý£¬ËÙ¶ÈÎª¸º
+ 184              		.loc 1 51 9 is_stmt 1 view .LVU42
+ 185              		.loc 1 51 21 is_stmt 0 view .LVU43
+ 186 0012 4042     		rsbs	r0, r0, #0
+ 187              	.LVL10:
+  52:USER/Hardware/Encoder.c ****     }
+  53:USER/Hardware/Encoder.c **** 		
+  54:USER/Hardware/Encoder.c ****     return ActualSpeed; // ·µ»Øµç»úAµÄÊµ¼ÊËÙ¶È
+ 188              		.loc 1 54 5 is_stmt 1 view .LVU44
+ 189              	.L15:
+  55:USER/Hardware/Encoder.c **** }
+ 190              		.loc 1 55 1 is_stmt 0 view .LVU45
+ 191 0014 7047     		bx	lr
+ 192              	.L18:
+ 193 0016 00BF     		.align	2
+ 194              	.L17:
+ 195 0018 00000000 		.word	htim5
+ 196              		.cfi_endproc
+ 197              	.LFE66:
+ 199              		.section	.text.MotorB_ActualSpeed,"ax",%progbits
+ 200              		.align	1
+ 201              		.global	MotorB_ActualSpeed
+ 202              		.syntax unified
+ 203              		.thumb
+ 204              		.thumb_func
+ 206              	MotorB_ActualSpeed:
+ 207              	.LFB67:
+  56:USER/Hardware/Encoder.c **** 
+  57:USER/Hardware/Encoder.c **** /**
+  58:USER/Hardware/Encoder.c ****   * @brief  »ñÈ¡µç»úBµÄÊµ¼ÊËÙ¶È¡£
+  59:USER/Hardware/Encoder.c ****   * @param  ÎÞ¡£
+  60:USER/Hardware/Encoder.c ****   * @retval int: ·µ»Øµç»úBµÄÊµ¼ÊËÙ¶ÈÖµ¡£
+  61:USER/Hardware/Encoder.c ****   */
+  62:USER/Hardware/Encoder.c **** int MotorB_ActualSpeed(void)
+  63:USER/Hardware/Encoder.c **** {	
+ 208              		.loc 1 63 1 is_stmt 1 view -0
+ 209              		.cfi_startproc
+ 210              		@ args = 0, pretend = 0, frame = 0
+ 211              		@ frame_needed = 0, uses_anonymous_args = 0
+ 212              		@ link register save eliminated.
+  64:USER/Hardware/Encoder.c ****     int ActualSpeed = 0;    
+ 213              		.loc 1 64 5 view .LVU47
+ 214              	.LVL11:
+  65:USER/Hardware/Encoder.c ****     ActualSpeed = __HAL_TIM_GET_COUNTER(&htim3); // ¶ÁÈ¡¶¨Ê±Æ÷3µÄ¼ÆÊýÆ÷Öµ
+ 215              		.loc 1 65 5 view .LVU48
+ 216              		.loc 1 65 19 is_stmt 0 view .LVU49
+ 217 0000 054B     		ldr	r3, .L21
+ 218 0002 1B68     		ldr	r3, [r3]
+ 219 0004 586A     		ldr	r0, [r3, #36]
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 6
+
+
+ 220              	.LVL12:
+  66:USER/Hardware/Encoder.c **** 		__HAL_TIM_SetCounter(&htim3 , 0);//Çå¿Õ¼ÆÊýÖµ
+ 221              		.loc 1 66 3 is_stmt 1 view .LVU50
+ 222 0006 0022     		movs	r2, #0
+ 223 0008 5A62     		str	r2, [r3, #36]
+  67:USER/Hardware/Encoder.c ****     if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htim3) == 0) // ¼ì²é¶¨Ê±Æ÷3ÊÇ·ñÏòÉÏ¼ÆÊý
+ 224              		.loc 1 67 5 view .LVU51
+ 225              		.loc 1 67 8 is_stmt 0 view .LVU52
+ 226 000a 1B68     		ldr	r3, [r3]
+ 227              		.loc 1 67 7 view .LVU53
+ 228 000c 13F0100F 		tst	r3, #16
+ 229 0010 00D0     		beq	.L19
+  68:USER/Hardware/Encoder.c ****     {
+  69:USER/Hardware/Encoder.c ****         ActualSpeed = ActualSpeed; // Èç¹ûÊÇÏòÉÏ¼ÆÊý£¬ËÙ¶ÈÎªÕý
+  70:USER/Hardware/Encoder.c ****     }
+  71:USER/Hardware/Encoder.c ****     else
+  72:USER/Hardware/Encoder.c ****     {
+  73:USER/Hardware/Encoder.c ****         ActualSpeed = -ActualSpeed; // Èç¹ûÊÇÏòÏÂ¼ÆÊý£¬ËÙ¶ÈÎª¸º
+ 230              		.loc 1 73 9 is_stmt 1 view .LVU54
+ 231              		.loc 1 73 21 is_stmt 0 view .LVU55
+ 232 0012 4042     		rsbs	r0, r0, #0
+ 233              	.LVL13:
+  74:USER/Hardware/Encoder.c ****     }
+  75:USER/Hardware/Encoder.c ****     return ActualSpeed; // ·µ»Øµç»úBµÄÊµ¼ÊËÙ¶È
+ 234              		.loc 1 75 5 is_stmt 1 view .LVU56
+ 235              	.L19:
+  76:USER/Hardware/Encoder.c **** }
+ 236              		.loc 1 76 1 is_stmt 0 view .LVU57
+ 237 0014 7047     		bx	lr
+ 238              	.L22:
+ 239 0016 00BF     		.align	2
+ 240              	.L21:
+ 241 0018 00000000 		.word	htim3
+ 242              		.cfi_endproc
+ 243              	.LFE67:
+ 245              		.section	.text.MotorC_ActualSpeed,"ax",%progbits
+ 246              		.align	1
+ 247              		.global	MotorC_ActualSpeed
+ 248              		.syntax unified
+ 249              		.thumb
+ 250              		.thumb_func
+ 252              	MotorC_ActualSpeed:
+ 253              	.LFB68:
+  77:USER/Hardware/Encoder.c **** 
+  78:USER/Hardware/Encoder.c **** /**
+  79:USER/Hardware/Encoder.c ****   * @brief  »ñÈ¡µç»úCµÄÊµ¼ÊËÙ¶È¡£
+  80:USER/Hardware/Encoder.c ****   * @param  ÎÞ¡£
+  81:USER/Hardware/Encoder.c ****   * @retval int: ·µ»Øµç»úCµÄÊµ¼ÊËÙ¶ÈÖµ¡£
+  82:USER/Hardware/Encoder.c ****   */
+  83:USER/Hardware/Encoder.c **** int MotorC_ActualSpeed(void)
+  84:USER/Hardware/Encoder.c **** {	
+ 254              		.loc 1 84 1 is_stmt 1 view -0
+ 255              		.cfi_startproc
+ 256              		@ args = 0, pretend = 0, frame = 0
+ 257              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258              		@ link register save eliminated.
+  85:USER/Hardware/Encoder.c ****     int ActualSpeed = 0;    
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 7
+
+
+ 259              		.loc 1 85 5 view .LVU59
+ 260              	.LVL14:
+  86:USER/Hardware/Encoder.c ****     ActualSpeed = __HAL_TIM_GET_COUNTER(&htim4); // ¶ÁÈ¡¶¨Ê±Æ÷4µÄ¼ÆÊýÆ÷Öµ
+ 261              		.loc 1 86 5 view .LVU60
+ 262              		.loc 1 86 19 is_stmt 0 view .LVU61
+ 263 0000 054B     		ldr	r3, .L25
+ 264 0002 1B68     		ldr	r3, [r3]
+ 265 0004 586A     		ldr	r0, [r3, #36]
+ 266              	.LVL15:
+  87:USER/Hardware/Encoder.c **** 		__HAL_TIM_SetCounter(&htim4 , 0);//Çå¿Õ¼ÆÊýÖµ
+ 267              		.loc 1 87 3 is_stmt 1 view .LVU62
+ 268 0006 0022     		movs	r2, #0
+ 269 0008 5A62     		str	r2, [r3, #36]
+  88:USER/Hardware/Encoder.c ****     if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htim4) == 0) // ¼ì²é¶¨Ê±Æ÷4ÊÇ·ñÏòÉÏ¼ÆÊý
+ 270              		.loc 1 88 5 view .LVU63
+ 271              		.loc 1 88 8 is_stmt 0 view .LVU64
+ 272 000a 1B68     		ldr	r3, [r3]
+ 273              		.loc 1 88 7 view .LVU65
+ 274 000c 13F0100F 		tst	r3, #16
+ 275 0010 00D0     		beq	.L23
+  89:USER/Hardware/Encoder.c ****     {
+  90:USER/Hardware/Encoder.c ****         ActualSpeed = ActualSpeed; // Èç¹ûÊÇÏòÉÏ¼ÆÊý£¬ËÙ¶ÈÎªÕý
+  91:USER/Hardware/Encoder.c ****     }
+  92:USER/Hardware/Encoder.c ****     else
+  93:USER/Hardware/Encoder.c ****     {
+  94:USER/Hardware/Encoder.c ****         ActualSpeed = -ActualSpeed; // Èç¹ûÊÇÏòÏÂ¼ÆÊý£¬ËÙ¶ÈÎª¸º
+ 276              		.loc 1 94 9 is_stmt 1 view .LVU66
+ 277              		.loc 1 94 21 is_stmt 0 view .LVU67
+ 278 0012 4042     		rsbs	r0, r0, #0
+ 279              	.LVL16:
+  95:USER/Hardware/Encoder.c ****     }
+  96:USER/Hardware/Encoder.c ****     return ActualSpeed; // ·µ»Øµç»úCµÄÊµ¼ÊËÙ¶È
+ 280              		.loc 1 96 5 is_stmt 1 view .LVU68
+ 281              	.L23:
+  97:USER/Hardware/Encoder.c **** }
+ 282              		.loc 1 97 1 is_stmt 0 view .LVU69
+ 283 0014 7047     		bx	lr
+ 284              	.L26:
+ 285 0016 00BF     		.align	2
+ 286              	.L25:
+ 287 0018 00000000 		.word	htim4
+ 288              		.cfi_endproc
+ 289              	.LFE68:
+ 291              		.section	.text.MotorD_ActualSpeed,"ax",%progbits
+ 292              		.align	1
+ 293              		.global	MotorD_ActualSpeed
+ 294              		.syntax unified
+ 295              		.thumb
+ 296              		.thumb_func
+ 298              	MotorD_ActualSpeed:
+ 299              	.LFB69:
+  98:USER/Hardware/Encoder.c **** 
+  99:USER/Hardware/Encoder.c **** /**
+ 100:USER/Hardware/Encoder.c ****   * @brief  »ñÈ¡µç»úDµÄÊµ¼ÊËÙ¶È¡£
+ 101:USER/Hardware/Encoder.c ****   * @param  ÎÞ¡£
+ 102:USER/Hardware/Encoder.c ****   * @retval int: ·µ»Øµç»úDµÄÊµ¼ÊËÙ¶ÈÖµ¡£
+ 103:USER/Hardware/Encoder.c ****   */
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 8
+
+
+ 104:USER/Hardware/Encoder.c **** int MotorD_ActualSpeed(void)
+ 105:USER/Hardware/Encoder.c **** {	
+ 300              		.loc 1 105 1 is_stmt 1 view -0
+ 301              		.cfi_startproc
+ 302              		@ args = 0, pretend = 0, frame = 0
+ 303              		@ frame_needed = 0, uses_anonymous_args = 0
+ 304              		@ link register save eliminated.
+ 106:USER/Hardware/Encoder.c ****     int ActualSpeed = 0;    
+ 305              		.loc 1 106 5 view .LVU71
+ 306              	.LVL17:
+ 107:USER/Hardware/Encoder.c ****     ActualSpeed = __HAL_TIM_GET_COUNTER(&htim1); // ¶ÁÈ¡¶¨Ê±Æ÷1µÄ¼ÆÊýÆ÷Öµ
+ 307              		.loc 1 107 5 view .LVU72
+ 308              		.loc 1 107 19 is_stmt 0 view .LVU73
+ 309 0000 054B     		ldr	r3, .L29
+ 310 0002 1B68     		ldr	r3, [r3]
+ 311 0004 586A     		ldr	r0, [r3, #36]
+ 312              	.LVL18:
+ 108:USER/Hardware/Encoder.c **** 		__HAL_TIM_SetCounter(&htim1 , 0);//Çå¿Õ¼ÆÊýÖµ
+ 313              		.loc 1 108 3 is_stmt 1 view .LVU74
+ 314 0006 0022     		movs	r2, #0
+ 315 0008 5A62     		str	r2, [r3, #36]
+ 109:USER/Hardware/Encoder.c ****     if(__HAL_TIM_IS_TIM_COUNTING_DOWN(&htim1) == 0) // ¼ì²é¶¨Ê±Æ÷1ÊÇ·ñÏòÉÏ¼ÆÊý
+ 316              		.loc 1 109 5 view .LVU75
+ 317              		.loc 1 109 8 is_stmt 0 view .LVU76
+ 318 000a 1B68     		ldr	r3, [r3]
+ 319              		.loc 1 109 7 view .LVU77
+ 320 000c 13F0100F 		tst	r3, #16
+ 321 0010 00D0     		beq	.L27
+ 110:USER/Hardware/Encoder.c ****     {
+ 111:USER/Hardware/Encoder.c ****         ActualSpeed = ActualSpeed; // Èç¹ûÊÇÏòÉÏ¼ÆÊý£¬ËÙ¶ÈÎªÕý
+ 112:USER/Hardware/Encoder.c ****     }
+ 113:USER/Hardware/Encoder.c ****     else
+ 114:USER/Hardware/Encoder.c ****     {
+ 115:USER/Hardware/Encoder.c ****         ActualSpeed = -ActualSpeed; // Èç¹ûÊÇÏòÏÂ¼ÆÊý£¬ËÙ¶ÈÎª¸º
+ 322              		.loc 1 115 9 is_stmt 1 view .LVU78
+ 323              		.loc 1 115 21 is_stmt 0 view .LVU79
+ 324 0012 4042     		rsbs	r0, r0, #0
+ 325              	.LVL19:
+ 116:USER/Hardware/Encoder.c ****     }
+ 117:USER/Hardware/Encoder.c ****     return ActualSpeed; // ·µ»Øµç»úDµÄÊµ¼ÊËÙ¶È
+ 326              		.loc 1 117 5 is_stmt 1 view .LVU80
+ 327              	.L27:
+ 118:USER/Hardware/Encoder.c **** }
+ 328              		.loc 1 118 1 is_stmt 0 view .LVU81
+ 329 0014 7047     		bx	lr
+ 330              	.L30:
+ 331 0016 00BF     		.align	2
+ 332              	.L29:
+ 333 0018 00000000 		.word	htim1
+ 334              		.cfi_endproc
+ 335              	.LFE69:
+ 337              		.section	.text.GetMotorSpeed,"ax",%progbits
+ 338              		.align	1
+ 339              		.global	GetMotorSpeed
+ 340              		.syntax unified
+ 341              		.thumb
+ 342              		.thumb_func
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 9
+
+
+ 344              	GetMotorSpeed:
+ 345              	.LVL20:
+ 346              	.LFB70:
+ 119:USER/Hardware/Encoder.c **** 
+ 120:USER/Hardware/Encoder.c **** 
+ 121:USER/Hardware/Encoder.c **** 
+ 122:USER/Hardware/Encoder.c **** /**
+ 123:USER/Hardware/Encoder.c ****   * @brief »ñÈ¡µç»úËÙ¶È
+ 124:USER/Hardware/Encoder.c ****   * @param motor_id: µç»úID£¨0-3·Ö±ð¶ÔÓ¦ËÄ¸ö¶¨Ê±Æ÷£©
+ 125:USER/Hardware/Encoder.c ****   * @param ppr: ±àÂëÆ÷Ã¿×ªÂö³åÊý£¨¿¼ÂÇ¼õËÙ±ÈºóµÄÖµ£¬¼´µç»úÊä³öÖá×ªÒ»È¦µÄÂö³åÊý£©
+ 126:USER/Hardware/Encoder.c ****   * @retval µç»ú×ªËÙ£¨RPM£©
+ 127:USER/Hardware/Encoder.c ****   */
+ 128:USER/Hardware/Encoder.c **** float GetMotorSpeed(uint8_t motor_id) {
+ 347              		.loc 1 128 39 is_stmt 1 view -0
+ 348              		.cfi_startproc
+ 349              		@ args = 0, pretend = 0, frame = 0
+ 350              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129:USER/Hardware/Encoder.c ****     if (motor_id >= MOTOR_NUM) {
+ 351              		.loc 1 129 5 view .LVU83
+ 352              		.loc 1 129 8 is_stmt 0 view .LVU84
+ 353 0000 0328     		cmp	r0, #3
+ 354 0002 47D8     		bhi	.L40
+ 128:USER/Hardware/Encoder.c ****     if (motor_id >= MOTOR_NUM) {
+ 355              		.loc 1 128 39 view .LVU85
+ 356 0004 2DE9F843 		push	{r3, r4, r5, r6, r7, r8, r9, lr}
+ 357              	.LCFI1:
+ 358              		.cfi_def_cfa_offset 32
+ 359              		.cfi_offset 3, -32
+ 360              		.cfi_offset 4, -28
+ 361              		.cfi_offset 5, -24
+ 362              		.cfi_offset 6, -20
+ 363              		.cfi_offset 7, -16
+ 364              		.cfi_offset 8, -12
+ 365              		.cfi_offset 9, -8
+ 366              		.cfi_offset 14, -4
+ 367 0008 0446     		mov	r4, r0
+ 130:USER/Hardware/Encoder.c ****         return 0.0f; // ´íÎóµÄµç»úID
+ 131:USER/Hardware/Encoder.c ****     }
+ 132:USER/Hardware/Encoder.c **** 
+ 133:USER/Hardware/Encoder.c ****     TIM_HandleTypeDef* htim = NULL;
+ 368              		.loc 1 133 5 is_stmt 1 view .LVU86
+ 369              	.LVL21:
+ 134:USER/Hardware/Encoder.c ****     switch (motor_id) {
+ 370              		.loc 1 134 5 view .LVU87
+ 371 000a 0328     		cmp	r0, #3
+ 372 000c 44D8     		bhi	.L41
+ 373 000e DFE800F0 		tbb	[pc, r0]
+ 374              	.L34:
+ 375 0012 02       		.byte	(.L37-.L34)/2
+ 376 0013 39       		.byte	(.L42-.L34)/2
+ 377 0014 35       		.byte	(.L35-.L34)/2
+ 378 0015 37       		.byte	(.L33-.L34)/2
+ 379              		.p2align 1
+ 380              	.L37:
+ 381 0016 224B     		ldr	r3, .L48
+ 382              	.LVL22:
+ 383              	.L36:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 10
+
+
+ 135:USER/Hardware/Encoder.c ****         case 0: htim = &htim5; break;
+ 136:USER/Hardware/Encoder.c ****         case 1: htim = &htim3; break;
+ 137:USER/Hardware/Encoder.c ****         case 2: htim = &htim4; break;
+ 138:USER/Hardware/Encoder.c ****         case 3: htim = &htim1; break;
+ 139:USER/Hardware/Encoder.c ****         default: return 0.0f;
+ 140:USER/Hardware/Encoder.c ****     }
+ 141:USER/Hardware/Encoder.c **** 
+ 142:USER/Hardware/Encoder.c ****     // »ñÈ¡µ±Ç°¼ÆÊýºÍÊ±¼ä
+ 143:USER/Hardware/Encoder.c ****     int32_t current_count = __HAL_TIM_GET_COUNTER(htim);
+ 384              		.loc 1 143 5 view .LVU88
+ 385              		.loc 1 143 29 is_stmt 0 view .LVU89
+ 386 0018 1B68     		ldr	r3, [r3]
+ 387              	.LVL23:
+ 388              		.loc 1 143 29 view .LVU90
+ 389 001a D3F82490 		ldr	r9, [r3, #36]
+ 390              	.LVL24:
+ 144:USER/Hardware/Encoder.c ****     uint32_t current_time = HAL_GetTick();
+ 391              		.loc 1 144 5 is_stmt 1 view .LVU91
+ 392              		.loc 1 144 29 is_stmt 0 view .LVU92
+ 393 001e FFF7FEFF 		bl	HAL_GetTick
+ 394              	.LVL25:
+ 395              		.loc 1 144 29 view .LVU93
+ 396 0022 0546     		mov	r5, r0
+ 397              	.LVL26:
+ 145:USER/Hardware/Encoder.c **** 
+ 146:USER/Hardware/Encoder.c ****     // ¼ÆËãÂö³åÔöÁ¿£¨´¦Àí¼ÆÊýÆ÷Òç³ö£©
+ 147:USER/Hardware/Encoder.c ****     int32_t pulse_diff = current_count - last_count[motor_id];
+ 398              		.loc 1 147 5 is_stmt 1 view .LVU94
+ 399              		.loc 1 147 52 is_stmt 0 view .LVU95
+ 400 0024 1F4B     		ldr	r3, .L48+4
+ 401 0026 53F82470 		ldr	r7, [r3, r4, lsl #2]
+ 402              		.loc 1 147 13 view .LVU96
+ 403 002a A9EB0707 		sub	r7, r9, r7
+ 404              	.LVL27:
+ 148:USER/Hardware/Encoder.c ****     // ×¢Òâ£ºÈç¹û¼ÆÊýÆ÷ÊÇ16Î»£¬ÇÒ¿ÉÄÜÒç³ö£¬ÕâÀïÐèÒª×öÒç³öÐÞÕý£¨¼ÙÉè¶¨Ê±Æ÷ÊÇ16Î»£¬¼ÆÊý·¶Î§0-65535£©
+ 149:USER/Hardware/Encoder.c ****     // 32Î»¼ÆÊýÆ÷µÄÒç³öÎÊÌâ½Ï¸´ÔÓ£¬ÕâÀïÔÝ²»¿¼ÂÇ£¬ÒòÎªSTM32µÄ¶¨Ê±Æ÷Í¨³£ÊÇ16Î»
+ 150:USER/Hardware/Encoder.c ****     // ¶ÔÓÚ16Î»¶¨Ê±Æ÷£¬µ±¼ÆÊý³¬¹ý65535»òµÍÓÚ0Ê±£¬»áÖØÐÂ¼ÆÊý£¬Òò´ËÎÒÃÇÐèÒª´¦ÀíÕâÖÖÇé¿ö
+ 151:USER/Hardware/Encoder.c ****     // Èç¹ûÂö³å²î³¬¹ý0x8000£¨¼´32768£©£¬ÔòËµÃ÷·¢ÉúÁËÏòÏÂÒç³ö£¨·´ÏòÐý×ªÇÒ¼ÆÊý´Ó0Ìøµ½65535£©
+ 152:USER/Hardware/Encoder.c ****     // Èç¹ûÂö³å²îÐ¡ÓÚ-0x8000£¬ÔòËµÃ÷·¢ÉúÁËÏòÉÏÒç³ö£¨ÕýÏòÐý×ªÇÒ¼ÆÊý´Ó65535Ìøµ½0£©
+ 153:USER/Hardware/Encoder.c ****     // ×¢Òâ£ºÕâÀï¼ÙÉè¶¨Ê±Æ÷ÊÇµÝÔö¼ÆÊý£¬ÇÒ±àÂëÆ÷Ä£Ê½»á×Ô¶¯´¦Àí·½Ïò£¨¼ÆÊý¿ÉÒÔÔö¼Ó»ò¼õÉÙ£©
+ 154:USER/Hardware/Encoder.c ****     // ÓÉÓÚ±àÂëÆ÷Ä£Ê½ÏÂ£¬¶¨Ê±Æ÷¿ÉÒÔµÝÔö»òµÝ¼õ¼ÆÊý£¬ËùÒÔÂö³å²îÖ±½ÓÏà¼õ¼´¿É£¬²»ÐèÒª´¦ÀíÒç³ö£¬ÒòÎª¶¨Ê±
+ 155:USER/Hardware/Encoder.c ****     // µ«ÊÇ£¬Èç¹ûÂö³å²îºÜ´ó£¨³¬¹ý16Î»µÄÕý¸º·¶Î§£©£¬ÎÒÃÇ¿ÉÒÔÍ¨¹ýÒÔÏÂ·½Ê½ÐÞÕý£º
+ 156:USER/Hardware/Encoder.c ****     // Èç¹ûÂö³å²î > 32767£¬Ôò pulse_diff -= 65536;
+ 157:USER/Hardware/Encoder.c ****     // Èç¹ûÂö³å²î < -32768£¬Ôò pulse_diff += 65536;
+ 158:USER/Hardware/Encoder.c ****     // µ«ÊÇ£¬ÓÉÓÚ±àÂëÆ÷Ä£Ê½ÏÂ£¬Á½´Î¶ÁÈ¡Ö®¼ä²»¿ÉÄÜÓÐ³¬¹ý32767¸öÂö³å£¨ÒòÎªÊ±¼ä¼ä¸ôºÜ¶Ì£©£¬ËùÒÔÍ¨³£²»Ð
+ 159:USER/Hardware/Encoder.c ****     if (pulse_diff > 32767) {
+ 405              		.loc 1 159 5 is_stmt 1 view .LVU97
+ 406              		.loc 1 159 8 is_stmt 0 view .LVU98
+ 407 002e B7F5004F 		cmp	r7, #32768
+ 408 0032 29DB     		blt	.L38
+ 160:USER/Hardware/Encoder.c ****         pulse_diff -= 65536;
+ 409              		.loc 1 160 9 is_stmt 1 view .LVU99
+ 410              		.loc 1 160 20 is_stmt 0 view .LVU100
+ 411 0034 A7F58037 		sub	r7, r7, #65536
+ 412              	.LVL28:
+ 413              	.L39:
+ 161:USER/Hardware/Encoder.c ****     } else if (pulse_diff < -32768) {
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 11
+
+
+ 162:USER/Hardware/Encoder.c ****         pulse_diff += 65536;
+ 163:USER/Hardware/Encoder.c ****     }
+ 164:USER/Hardware/Encoder.c **** 
+ 165:USER/Hardware/Encoder.c ****     // ¼ÆËãÊ±¼ä²î£¨Ãë£©
+ 166:USER/Hardware/Encoder.c ****     float time_diff = (current_time - last_time[motor_id]) / 1000.0f;
+ 414              		.loc 1 166 5 is_stmt 1 view .LVU101
+ 415              		.loc 1 166 48 is_stmt 0 view .LVU102
+ 416 0038 DFF86C80 		ldr	r8, .L48+8
+ 417 003c 58F82400 		ldr	r0, [r8, r4, lsl #2]
+ 418              	.LVL29:
+ 419              		.loc 1 166 60 view .LVU103
+ 420 0040 281A     		subs	r0, r5, r0
+ 421 0042 FFF7FEFF 		bl	__aeabi_ui2f
+ 422              	.LVL30:
+ 423              		.loc 1 166 11 view .LVU104
+ 424 0046 1949     		ldr	r1, .L48+12
+ 425 0048 FFF7FEFF 		bl	__aeabi_fdiv
+ 426              	.LVL31:
+ 427 004c 0646     		mov	r6, r0
+ 428              	.LVL32:
+ 167:USER/Hardware/Encoder.c **** 
+ 168:USER/Hardware/Encoder.c ****     // ¸üÐÂÉÏÒ»´Î¼ÇÂ¼
+ 169:USER/Hardware/Encoder.c ****     last_count[motor_id] = current_count;
+ 429              		.loc 1 169 5 is_stmt 1 view .LVU105
+ 430              		.loc 1 169 26 is_stmt 0 view .LVU106
+ 431 004e 154B     		ldr	r3, .L48+4
+ 432 0050 43F82490 		str	r9, [r3, r4, lsl #2]
+ 170:USER/Hardware/Encoder.c ****     last_time[motor_id] = current_time;
+ 433              		.loc 1 170 5 is_stmt 1 view .LVU107
+ 434              		.loc 1 170 25 is_stmt 0 view .LVU108
+ 435 0054 48F82450 		str	r5, [r8, r4, lsl #2]
+ 171:USER/Hardware/Encoder.c **** 
+ 172:USER/Hardware/Encoder.c ****     // ±ÜÃâ³ýÒÔ0
+ 173:USER/Hardware/Encoder.c ****     if (time_diff < 0.0001f) {
+ 436              		.loc 1 173 5 is_stmt 1 view .LVU109
+ 437              		.loc 1 173 8 is_stmt 0 view .LVU110
+ 438 0058 1549     		ldr	r1, .L48+16
+ 439 005a FFF7FEFF 		bl	__aeabi_fcmplt
+ 440              	.LVL33:
+ 441              		.loc 1 173 8 view .LVU111
+ 442 005e E8B9     		cbnz	r0, .L43
+ 174:USER/Hardware/Encoder.c ****         return 0.0f;
+ 175:USER/Hardware/Encoder.c ****     }
+ 176:USER/Hardware/Encoder.c **** 
+ 177:USER/Hardware/Encoder.c ****     // ¼ÆËã×ªËÙ RPM = (Âö³åÔöÁ¿ / Ê±¼ä²î) * (60Ãë/·ÖÖÓ) / (Ã¿×ªÂö³åÊý * 4)
+ 178:USER/Hardware/Encoder.c ****     // ³ËÒÔ4ÊÇÒòÎªÕý½»±àÂëÄ£Ê½ÏÂ£¬Ã¿¸öÖÜÆÚÓÐ4¸ö±ßÑØ£¨ÉÏÉýÑØºÍÏÂ½µÑØ¶¼»á¼ÆÊý£©£¬ËùÒÔÃ¿¸öÖÜÆÚµÄÂö³åÊý
+ 179:USER/Hardware/Encoder.c ****     float rpm = (pulse_diff / time_diff) * 60.0f / (330.0 * 4.0f);
+ 443              		.loc 1 179 5 is_stmt 1 view .LVU112
+ 444              		.loc 1 179 29 is_stmt 0 view .LVU113
+ 445 0060 3846     		mov	r0, r7
+ 446 0062 FFF7FEFF 		bl	__aeabi_i2f
+ 447              	.LVL34:
+ 448 0066 3146     		mov	r1, r6
+ 449 0068 FFF7FEFF 		bl	__aeabi_fdiv
+ 450              	.LVL35:
+ 451              		.loc 1 179 42 view .LVU114
+ 452 006c 1149     		ldr	r1, .L48+20
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 12
+
+
+ 453 006e FFF7FEFF 		bl	__aeabi_fmul
+ 454              	.LVL36:
+ 455              		.loc 1 179 11 view .LVU115
+ 456 0072 1149     		ldr	r1, .L48+24
+ 457 0074 FFF7FEFF 		bl	__aeabi_fdiv
+ 458              	.LVL37:
+ 180:USER/Hardware/Encoder.c **** 
+ 181:USER/Hardware/Encoder.c ****     return rpm;
+ 459              		.loc 1 181 5 is_stmt 1 view .LVU116
+ 460              	.L31:
+ 182:USER/Hardware/Encoder.c **** }
+ 461              		.loc 1 182 1 is_stmt 0 view .LVU117
+ 462 0078 BDE8F883 		pop	{r3, r4, r5, r6, r7, r8, r9, pc}
+ 463              	.LVL38:
+ 464              	.L35:
+ 137:USER/Hardware/Encoder.c ****         case 3: htim = &htim1; break;
+ 465              		.loc 1 137 17 is_stmt 1 view .LVU118
+ 137:USER/Hardware/Encoder.c ****         case 3: htim = &htim1; break;
+ 466              		.loc 1 137 32 view .LVU119
+ 137:USER/Hardware/Encoder.c ****         case 3: htim = &htim1; break;
+ 467              		.loc 1 137 22 is_stmt 0 view .LVU120
+ 468 007c 0F4B     		ldr	r3, .L48+28
+ 137:USER/Hardware/Encoder.c ****         case 3: htim = &htim1; break;
+ 469              		.loc 1 137 32 view .LVU121
+ 470 007e CBE7     		b	.L36
+ 471              	.LVL39:
+ 472              	.L33:
+ 138:USER/Hardware/Encoder.c ****         default: return 0.0f;
+ 473              		.loc 1 138 17 is_stmt 1 view .LVU122
+ 138:USER/Hardware/Encoder.c ****         default: return 0.0f;
+ 474              		.loc 1 138 32 view .LVU123
+ 138:USER/Hardware/Encoder.c ****         default: return 0.0f;
+ 475              		.loc 1 138 22 is_stmt 0 view .LVU124
+ 476 0080 0F4B     		ldr	r3, .L48+32
+ 138:USER/Hardware/Encoder.c ****         default: return 0.0f;
+ 477              		.loc 1 138 32 view .LVU125
+ 478 0082 C9E7     		b	.L36
+ 479              	.LVL40:
+ 480              	.L42:
+ 136:USER/Hardware/Encoder.c ****         case 2: htim = &htim4; break;
+ 481              		.loc 1 136 22 view .LVU126
+ 482 0084 0F4B     		ldr	r3, .L48+36
+ 483 0086 C7E7     		b	.L36
+ 484              	.LVL41:
+ 485              	.L38:
+ 161:USER/Hardware/Encoder.c ****         pulse_diff += 65536;
+ 486              		.loc 1 161 12 is_stmt 1 view .LVU127
+ 161:USER/Hardware/Encoder.c ****         pulse_diff += 65536;
+ 487              		.loc 1 161 15 is_stmt 0 view .LVU128
+ 488 0088 17F5004F 		cmn	r7, #32768
+ 489 008c D4DA     		bge	.L39
+ 162:USER/Hardware/Encoder.c ****     }
+ 490              		.loc 1 162 9 is_stmt 1 view .LVU129
+ 162:USER/Hardware/Encoder.c ****     }
+ 491              		.loc 1 162 20 is_stmt 0 view .LVU130
+ 492 008e 07F58037 		add	r7, r7, #65536
+ 493              	.LVL42:
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 13
+
+
+ 162:USER/Hardware/Encoder.c ****     }
+ 494              		.loc 1 162 20 view .LVU131
+ 495 0092 D1E7     		b	.L39
+ 496              	.LVL43:
+ 497              	.L40:
+ 498              	.LCFI2:
+ 499              		.cfi_def_cfa_offset 0
+ 500              		.cfi_restore 3
+ 501              		.cfi_restore 4
+ 502              		.cfi_restore 5
+ 503              		.cfi_restore 6
+ 504              		.cfi_restore 7
+ 505              		.cfi_restore 8
+ 506              		.cfi_restore 9
+ 507              		.cfi_restore 14
+ 130:USER/Hardware/Encoder.c ****     }
+ 508              		.loc 1 130 16 view .LVU132
+ 509 0094 0020     		movs	r0, #0
+ 510              	.LVL44:
+ 511              		.loc 1 182 1 view .LVU133
+ 512 0096 7047     		bx	lr
+ 513              	.LVL45:
+ 514              	.L41:
+ 515              	.LCFI3:
+ 516              		.cfi_def_cfa_offset 32
+ 517              		.cfi_offset 3, -32
+ 518              		.cfi_offset 4, -28
+ 519              		.cfi_offset 5, -24
+ 520              		.cfi_offset 6, -20
+ 521              		.cfi_offset 7, -16
+ 522              		.cfi_offset 8, -12
+ 523              		.cfi_offset 9, -8
+ 524              		.cfi_offset 14, -4
+ 134:USER/Hardware/Encoder.c ****         case 0: htim = &htim5; break;
+ 525              		.loc 1 134 5 view .LVU134
+ 526 0098 0020     		movs	r0, #0
+ 527              	.LVL46:
+ 134:USER/Hardware/Encoder.c ****         case 0: htim = &htim5; break;
+ 528              		.loc 1 134 5 view .LVU135
+ 529 009a EDE7     		b	.L31
+ 530              	.LVL47:
+ 531              	.L43:
+ 174:USER/Hardware/Encoder.c ****     }
+ 532              		.loc 1 174 16 view .LVU136
+ 533 009c 0020     		movs	r0, #0
+ 534 009e EBE7     		b	.L31
+ 535              	.L49:
+ 536              		.align	2
+ 537              	.L48:
+ 538 00a0 00000000 		.word	htim5
+ 539 00a4 00000000 		.word	last_count
+ 540 00a8 00000000 		.word	last_time
+ 541 00ac 00007A44 		.word	1148846080
+ 542 00b0 17B7D138 		.word	953267991
+ 543 00b4 00007042 		.word	1114636288
+ 544 00b8 0000A544 		.word	1151664128
+ 545 00bc 00000000 		.word	htim4
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 14
+
+
+ 546 00c0 00000000 		.word	htim1
+ 547 00c4 00000000 		.word	htim3
+ 548              		.cfi_endproc
+ 549              	.LFE70:
+ 551              		.section	.bss.last_time,"aw",%nobits
+ 552              		.align	2
+ 555              	last_time:
+ 556 0000 00000000 		.space	16
+ 556      00000000 
+ 556      00000000 
+ 556      00000000 
+ 557              		.section	.bss.last_count,"aw",%nobits
+ 558              		.align	2
+ 561              	last_count:
+ 562 0000 00000000 		.space	16
+ 562      00000000 
+ 562      00000000 
+ 562      00000000 
+ 563              		.text
+ 564              	.Letext0:
+ 565              		.file 2 "D:/arm-none-eabi-gcc/arm-none-eabi/include/machine/_default_types.h"
+ 566              		.file 3 "D:/arm-none-eabi-gcc/arm-none-eabi/include/sys/_stdint.h"
+ 567              		.file 4 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h"
+ 568              		.file 5 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 569              		.file 6 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 570              		.file 7 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h"
+ 571              		.file 8 "Core/Inc/tim.h"
+ 572              		.file 9 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ARM GAS  C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Encoder.c
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:19     .text.Encoder_Init:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:25     .text.Encoder_Init:00000000 Encoder_Init
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:96     .text.Encoder_Init:0000004c $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:100    .text.Encoder_Init:0000005c $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:144    .text.Encoder_Init:00000088 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:561    .bss.last_count:00000000 last_count
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:555    .bss.last_time:00000000 last_time
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:154    .text.MotorA_ActualSpeed:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:160    .text.MotorA_ActualSpeed:00000000 MotorA_ActualSpeed
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:195    .text.MotorA_ActualSpeed:00000018 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:200    .text.MotorB_ActualSpeed:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:206    .text.MotorB_ActualSpeed:00000000 MotorB_ActualSpeed
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:241    .text.MotorB_ActualSpeed:00000018 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:246    .text.MotorC_ActualSpeed:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:252    .text.MotorC_ActualSpeed:00000000 MotorC_ActualSpeed
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:287    .text.MotorC_ActualSpeed:00000018 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:292    .text.MotorD_ActualSpeed:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:298    .text.MotorD_ActualSpeed:00000000 MotorD_ActualSpeed
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:333    .text.MotorD_ActualSpeed:00000018 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:338    .text.GetMotorSpeed:00000000 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:344    .text.GetMotorSpeed:00000000 GetMotorSpeed
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:375    .text.GetMotorSpeed:00000012 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:379    .text.GetMotorSpeed:00000016 $t
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:538    .text.GetMotorSpeed:000000a0 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:552    .bss.last_time:00000000 $d
+C:\Users\Lenovo\AppData\Local\Temp\ccjwl3Lo.s:558    .bss.last_count:00000000 $d
+
+UNDEFINED SYMBOLS
+HAL_TIM_Encoder_Start
+HAL_GetTick
+htim5
+htim3
+htim4
+htim1
+__aeabi_ui2f
+__aeabi_fdiv
+__aeabi_fcmplt
+__aeabi_i2f
+__aeabi_fmul

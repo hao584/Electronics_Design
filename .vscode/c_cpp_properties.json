@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "name": "STM32", // 配置名称
+      "includePath": [
+        "${workspaceFolder}/**" // 默认包含当前工作区所有文件
+      ],
+      "defines": [
+        "DEBUG",
+        "UNICODE",
+        "_UNICODE",
+        "USE_HAL_DRIVER",
+        "STM32F103xE"], 
+      "compilerPath": "D:/arm-none-eabi-gcc/bin/arm-none-eabi-gcc.exe",     // 编译器路径（重要）
+      "compilerArgs": [
+        "-mcpu=cortex-m3",
+        "-mthumb"
+      ],
+      "cStandard": "c99",                 // C标准（c99/c11等）
+      "cppStandard": "c++17",             // C++标准（c++14/c++17等）
+      "intelliSenseMode": "gcc-arm" // IntelliSense模式（根据平台选）
+    }
+  ],
+  "version": 4 // 固定版本号
+}
