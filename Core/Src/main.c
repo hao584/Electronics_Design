@@ -30,7 +30,9 @@
 #include "bsp_OLED.h"
 #include "Motor.h" 
 #include "Encoder.h"
+#include "servo.h"
 #include "MPU_Updata.h"
+
 
 #include <stdio.h>
 /* USER CODE END Includes */
@@ -107,6 +109,7 @@ int main(void)
   MX_TIM8_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	Motor_Init();
