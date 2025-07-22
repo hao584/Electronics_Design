@@ -30,6 +30,8 @@
 #include "bsp_OLED.h"
 #include "Motor.h" 
 #include "Encoder.h"
+#include "MPU_Updata.h"
+
 #include <stdio.h>
 /* USER CODE END Includes */
 
@@ -51,7 +53,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-int   Actual_Speed=0;
 
 /* USER CODE END PV */
 
@@ -63,8 +64,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t rec_tra_data[1]; // 锟斤拷锟斤拷一锟斤拷锟斤拷锟介，锟斤拷锟节达拷沤锟斤拷蘸头锟斤拷偷锟斤拷锟斤拷锟?
-uint8_t Bluetooth_rec_tra_data[1]; // 锟斤拷锟斤拷一锟斤拷锟斤拷锟介，锟斤拷锟节达拷沤锟斤拷蘸头锟斤拷偷锟斤拷锟斤拷锟?
+uint8_t rec_tra_data[1]; // 定义一个数组，用于存放串口接收和发送的数据
+uint8_t Bluetooth_rec_tra_data[1]; // 定义一个数组，用于存放蓝牙接收和发送的数据
 char Temp_chr[100];
 pid_t moterB_pid ;
 
@@ -99,25 +100,18 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  MX_TIM8_Init();
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_TIM5_Init();
+  MX_TIM8_Init();
+  MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	Motor_Init();
   Key_Init (); 
-	
-	
-  HAL_UART_Transmit(&huart1, "Hello World", sizeof("Hello World")-1, 0XFFFF); 
-  HAL_UART_Receive_IT(&huart1, (uint8_t *)&rec_tra_data, 1);
-	
-  HAL_UART_Transmit(&huart2, "Hello Bluetooth", sizeof("Hello Bluetooth")-1, 0XFFFF);
-  HAL_UART_Receive_IT(&huart2, (uint8_t *)&Bluetooth_rec_tra_data, 1); 
-	
+	mpu6050_Init();
   Encoder_Init();	
 	pid_set(&moterB_pid, 0.68, 0.2, 0.0, 100, 10);
   /* USER CODE END 2 */
@@ -127,9 +121,10 @@ int main(void)
   while (1)
   {
 		
-		MotorB_Speed(pid_cal(&moterB_pid,GetMotorSpeed(1),0));
-    sprintf(Temp_chr,"A:%f",GetMotorSpeed(1));
-		OLED_String(1,16,Temp_chr,16);	 
+		// MotorB_Speed(0);
+    // sprintf(Temp_chr,"B:%f",GetMotorSpeed(1));
+		// OLED_String(1,16,Temp_chr,16);	
+    mpu6050_updata(); 
 	  HAL_Delay(20);
     /* USER CODE END WHILE */
 
@@ -178,33 +173,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-  // 锟斤拷榇拷锟斤拷UART锟斤拷锟斤拷欠锟轿猦uart1锟斤拷锟斤拷锟角凤拷锟斤拷USART1锟斤拷锟叫讹拷
-  if (huart == &huart1) 
-  {
-    // 锟斤拷锟斤拷锟経SART1锟斤拷锟叫断ｏ拷锟津将斤拷锟秸碉拷锟斤拷锟斤拷锟捷凤拷锟酵伙拷去
-    // 锟斤拷锟斤拷锟斤拷锟絩ec_tra_data锟斤拷一锟斤拷全锟街憋拷锟斤拷锟斤拷锟斤拷锟节存储锟斤拷锟秸碉拷锟斤拷锟斤拷锟斤拷
-    HAL_UART_Transmit(&huart1, (uint8_t *)rec_tra_data, 1, 0xffff); 
-    
-    // 锟劫次匡拷锟斤拷锟斤拷锟节斤拷锟斤拷锟叫断ｏ拷准锟斤拷锟斤拷锟斤拷锟斤拷一锟斤拷锟街斤拷
-    // 锟斤拷锟斤拷锟斤拷锟矫筹拷时时锟斤拷为0xffff锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷时锟斤拷锟斤拷没锟叫斤拷锟秸碉拷锟斤拷锟捷ｏ拷锟斤拷锟叫断诧拷锟结触锟斤拷
-    HAL_UART_Receive_IT(&huart1, (uint8_t *)&rec_tra_data, 1); 
-  }
-	
-	
-  // 锟斤拷榇拷锟斤拷UART锟斤拷锟斤拷欠锟轿猦uart2锟斤拷锟斤拷锟角凤拷锟斤拷USART2锟斤拷锟叫讹拷
-  if (huart == &huart2) 
-  {
-    // 锟斤拷锟斤拷锟経SART2锟斤拷锟叫断ｏ拷锟津将斤拷锟秸碉拷锟斤拷锟斤拷锟捷凤拷锟酵伙拷去
-    // 锟斤拷锟斤拷锟斤拷锟紹luetooth_rec_tra_data锟斤拷一锟斤拷全锟街憋拷锟斤拷锟斤拷锟斤拷锟节存储锟斤拷锟秸碉拷锟斤拷锟斤拷锟斤拷
-    HAL_UART_Transmit(&huart2, (uint8_t *)Bluetooth_rec_tra_data, 1, 0xffff); 
-    
-    // 锟劫次匡拷锟斤拷锟斤拷锟节斤拷锟斤拷锟叫断ｏ拷准锟斤拷锟斤拷锟斤拷锟斤拷一锟斤拷锟街斤拷
-    // 锟斤拷锟斤拷锟斤拷锟矫筹拷时时锟斤拷为0xffff锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷时锟斤拷锟斤拷没锟叫斤拷锟秸碉拷锟斤拷锟捷ｏ拷锟斤拷锟叫断诧拷锟结触锟斤拷
-    HAL_UART_Receive_IT(&huart2, (uint8_t *)&Bluetooth_rec_tra_data, 1); 
-  }
-}
+
 /* USER CODE END 4 */
 
 /**
