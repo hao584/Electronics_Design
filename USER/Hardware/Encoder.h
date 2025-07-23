@@ -4,10 +4,8 @@
 #include "main.h" // 包含主头文件，其中包含了MCU系列和HAL库的配置
 
 void Encoder_Init(void);
-int MotorA_ActualSpeed(void);
 int MotorB_ActualSpeed(void);
 int MotorC_ActualSpeed(void);
-int MotorD_ActualSpeed(void);
 float GetMotorSpeed(uint8_t motor_id);
 
 

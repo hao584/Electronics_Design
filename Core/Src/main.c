@@ -69,6 +69,7 @@ void SystemClock_Config(void);
 uint8_t rec_tra_data[1]; // 定义一个数组，用于存放串口接收和发送的数据
 uint8_t Bluetooth_rec_tra_data[1]; // 定义一个数组，用于存放蓝牙接收和发送的数据
 char Temp_chr[100];
+extern struct keys key[3];
 pid_t moterB_pid ;
 
 /* USER CODE END 0 */
@@ -105,7 +106,6 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
-  MX_TIM5_Init();
   MX_TIM8_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
@@ -113,9 +113,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	Motor_Init();
-  Key_Init (); 
 	mpu6050_Init();
-  Encoder_Init();	
+  Encoder_Init();
+  HAL_TIM_Base_Start_IT(&htim1 );	
 	pid_set(&moterB_pid, 0.68, 0.2, 0.0, 100, 10);
   /* USER CODE END 2 */
 
@@ -123,12 +123,33 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		
-		// MotorB_Speed(0);
-    // sprintf(Temp_chr,"B:%f",GetMotorSpeed(1));
-		// OLED_String(1,16,Temp_chr,16);	
-    mpu6050_updata(); 
-	  HAL_Delay(20);
+    if(key[0].press ==1){
+     Left_Red_On; // 打开左侧红色LED
+     OLED_String(1,16,"AUTO     ",16);
+		key[0].press =0;
+		}
+	  if(key[1].press ==1){
+     Left_Blue_On; // 打开左侧蓝色LED
+     OLED_String(1,16,"Buletooth",16);
+		key[1].press =0;
+		}
+    HAL_Delay (50);
+		// Get_KeyNum();
+    // if(Key1_Num % 2 == 0)
+    // {
+    //    OLED_String(1,16,"AUTO     ",16);
+    // }
+    // else {
+    //    OLED_String(1,16,"Buletooth",16);
+    // }
+		//  MotorC_Speed(50);
+    //  MotorB_Speed(50);
+    // // sprintf(Temp_chr,"B:%f",GetMotorSpeed(1));
+		// // OLED_String(1,16,Temp_chr,16);	
+    // // mpu6050_updata(); 
+	  // HAL_Delay(1000);
+    // MotorC_Speed(-50);
+    // MotorB_Speed(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -74,14 +74,14 @@ void MotorD_Speed(float Speed)
     if(Speed >= 0)
     {
         __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_4, Speed); // 设置PWM占空比，控制速度
-        HAL_GPIO_WritePin(DIN1_GPIO_Port, DIN1_Pin, GPIO_PIN_SET);   // 电机D正转
-        HAL_GPIO_WritePin(DIN2_GPIO_Port, DIN2_Pin, GPIO_PIN_RESET); // 停止电机D反转
+        HAL_GPIO_WritePin(DIN1_GPIO_Port, DIN1_Pin, GPIO_PIN_RESET);   // 电机D正转
+        HAL_GPIO_WritePin(DIN2_GPIO_Port, DIN2_Pin, GPIO_PIN_SET); // 停止电机D反转
     }
     else
     {
         __HAL_TIM_SetCompare(&htim8, TIM_CHANNEL_4, -Speed); // 设置PWM占空比，控制速度
-        HAL_GPIO_WritePin(DIN1_GPIO_Port, DIN1_Pin, GPIO_PIN_RESET); // 停止电机D正转
-        HAL_GPIO_WritePin(DIN2_GPIO_Port, DIN2_Pin, GPIO_PIN_SET);   // 电机D反转
+        HAL_GPIO_WritePin(DIN1_GPIO_Port, DIN1_Pin, GPIO_PIN_SET); // 停止电机D正转
+        HAL_GPIO_WritePin(DIN2_GPIO_Port, DIN2_Pin, GPIO_PIN_RESET);   // 电机D反转
     }
 }
 
