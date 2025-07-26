@@ -1,4 +1,8 @@
 {
     "files.autoGuessEncoding": true,
-    "files.encoding": "gbk"
+    "files.encoding": "gbk",
+    "files.associations": {
+        "stm32f1xx_hal.h": "c",
+        "bsp_oled.h": "c"
+    }
 }

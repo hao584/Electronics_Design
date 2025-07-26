@@ -31,7 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -67,6 +67,22 @@ void Error_Handler(void);
 #define KEY2_GPIO_Port GPIOC
 #define KEY3_Pin GPIO_PIN_3
 #define KEY3_GPIO_Port GPIOC
+#define IR_X1_Pin GPIO_PIN_4
+#define IR_X1_GPIO_Port GPIOA
+#define IR_X2_Pin GPIO_PIN_5
+#define IR_X2_GPIO_Port GPIOA
+#define IR_X3_Pin GPIO_PIN_4
+#define IR_X3_GPIO_Port GPIOC
+#define IR_X4_Pin GPIO_PIN_5
+#define IR_X4_GPIO_Port GPIOC
+#define IR_X5_Pin GPIO_PIN_0
+#define IR_X5_GPIO_Port GPIOB
+#define IR_X6_Pin GPIO_PIN_1
+#define IR_X6_GPIO_Port GPIOB
+#define IR_X7_Pin GPIO_PIN_7
+#define IR_X7_GPIO_Port GPIOE
+#define IR_X8_Pin GPIO_PIN_8
+#define IR_X8_GPIO_Port GPIOE
 #define CIN1_Pin GPIO_PIN_13
 #define CIN1_GPIO_Port GPIOB
 #define DIN1_Pin GPIO_PIN_14

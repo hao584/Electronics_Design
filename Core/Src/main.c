@@ -32,9 +32,10 @@
 #include "Encoder.h"
 #include "servo.h"
 #include "MPU_Updata.h"
+#include "irtracking.h"
 
 
-#include <stdio.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -70,7 +71,12 @@ uint8_t rec_tra_data[1]; // 定义一个数组，用于存放串口接收和发�
 uint8_t Bluetooth_rec_tra_data[1]; // 定义一个数组，用于存放蓝牙接收和发送的数据
 char Temp_chr[100];
 extern struct keys key[3];
-pid_t moterB_pid ;
+pid_t pid_L,pid_R;	//PID左右轮参数
+float PWM_Left,PWM_Right;
+float Err;			//小车偏离差值
+uint8_t Track;
+
+
 
 /* USER CODE END 0 */
 
@@ -113,35 +119,43 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	OLED_Init();
 	Motor_Init();
-	mpu6050_Init();
+	//mpu6050_Init();
   Encoder_Init();
   HAL_TIM_Base_Start_IT(&htim1 );	
-	pid_set(&moterB_pid, 0.68, 0.2, 0.0, 100, 10);
+  pid_set(&pid_L,0.5,0.1,0,100,50);	//速度PID参数初始化	17.12	11.75	0
+	pid_set(&pid_R,0.45,0.1,0,100,50);		//速度PID参数初始化	17.44	11.98	0
+  pid_L.set = 20;	//设置速度目标
+	pid_R.set = 20;	//设置速度目标
+  HAL_Delay (1000);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if(key[0].press ==1){
-     Left_Red_On; // 打开左侧红色LED
-     OLED_String(1,16,"AUTO     ",16);
-		key[0].press =0;
-		}
-	  if(key[1].press ==1){
-     Left_Blue_On; // 打开左侧蓝色LED
-     OLED_String(1,16,"Buletooth",16);
-		key[1].press =0;
-		}
-    HAL_Delay (50);
-		// Get_KeyNum();
-    // if(Key1_Num % 2 == 0)
-    // {
+    // OLED_String(1,16,"AUTO     ",16);
+     Read_Track_DATA(&Track);
+     sprintf(Temp_chr,"s:%.2f %.2f",GetMotorSpeed(0),GetMotorSpeed(1));
+     OLED_String(1,16,Temp_chr,16);
+     PWM_Left = pid_cal(&pid_L,GetMotorSpeed(0),pid_L.set);
+		 PWM_Right = pid_cal(&pid_R,-GetMotorSpeed(1),pid_R.set);
+	   Err = Track_Err();
+		 pid_L.set = 12-Err;
+		 pid_R.set = 12+Err;
+    
+     MotorB_Speed(PWM_Left);
+     MotorC_Speed(PWM_Right);
+     HAL_Delay(20);
+    // HAL_Delay (1000);
+    // if(key[0].press ==1){
     //    OLED_String(1,16,"AUTO     ",16);
+    //    key[0].press =0;
     // }
-    // else {
+    // else if (key[1].press ==1){
     //    OLED_String(1,16,"Buletooth",16);
+    //    key[1].press =0;
     // }
+    
 		//  MotorC_Speed(50);
     //  MotorB_Speed(50);
     // // sprintf(Temp_chr,"B:%f",GetMotorSpeed(1));
@@ -156,7 +170,6 @@ int main(void)
   }
   /* USER CODE END 3 */
 }
-
 /**
   * @brief System Clock Configuration
   * @retval None

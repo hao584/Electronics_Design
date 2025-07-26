@@ -78,6 +78,30 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : IR_X1_Pin IR_X2_Pin */
+  GPIO_InitStruct.Pin = IR_X1_Pin|IR_X2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : IR_X3_Pin IR_X4_Pin */
+  GPIO_InitStruct.Pin = IR_X3_Pin|IR_X4_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : IR_X5_Pin IR_X6_Pin */
+  GPIO_InitStruct.Pin = IR_X5_Pin|IR_X6_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : IR_X7_Pin IR_X8_Pin */
+  GPIO_InitStruct.Pin = IR_X7_Pin|IR_X8_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
   /*Configure GPIO pins : CIN1_Pin DIN1_Pin DIN2_Pin BIN1_Pin
                            BIN2_Pin */
   GPIO_InitStruct.Pin = CIN1_Pin|DIN1_Pin|DIN2_Pin|BIN1_Pin
